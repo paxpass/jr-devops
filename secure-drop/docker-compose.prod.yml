@@ -1,0 +1,82 @@
+version: '3.8'
+
+# Use: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  app:
+    restart: unless-stopped
+    
+    volumes: []
+    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.secure-drop.rule=Host(`paxform-drop.duckdns.org`)"
+      - "traefik.http.routers.secure-drop.entrypoints=websecure"
+      - "traefik.http.routers.secure-drop.tls=true"
+      - "traefik.http.routers.secure-drop.tls.certresolver=letsencrypt"
+      - "traefik.http.services.secure-drop.loadbalancer.server.port=8000"
+      - "traefik.http.services.secure-drop.loadbalancer.healthcheck.path=/api/health"
+      - "traefik.http.services.secure-drop.loadbalancer.healthcheck.interval=30s"
+      - "traefik.docker.network=traefik-public"
+      - "traefik.http.middlewares.secure-headers.headers.sslredirect=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.secure-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.secure-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.secure-headers.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.secure-headers.headers.frameDeny=true"
+      - "traefik.http.routers.secure-drop.middlewares=secure-headers@docker"
+      - "traefik.http.routers.secure-drop-http.rule=Host(`paxform-drop.duckdns.org`)"
+      - "traefik.http.routers.secure-drop-http.entrypoints=web"
+      - "traefik.http.routers.secure-drop-http.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+    
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - LOG_LEVEL=error
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  db:
+    restart: unless-stopped
+    ports: []
+    
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  redis:
+    image: redis:7-alpine
+    container_name: secure-drop-redis
+    restart: unless-stopped
+    networks:
+      - secure-drop-network
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  redis-data:
+    driver: local
