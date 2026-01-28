@@ -1,0 +1,45 @@
+version: '3.8'
+
+# Automatically loaded in development
+# Overrides settings in docker-compose.yml
+
+services:
+  app:
+    ports:
+      - "8000:8000"
+    
+    volumes:
+      - ./:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - LOG_CHANNEL=stack
+      - LOG_LEVEL=debug
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+    
+    restart: "no"
+    labels: []
+
+  db:
+    ports:
+      - "5432:5432"
+    
+    restart: "no"
+    
+    command: postgres -c log_statement=all -c log_destination=stderr
+    
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: secure-drop-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - secure-drop-network
