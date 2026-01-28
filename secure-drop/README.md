@@ -1,24 +1,24 @@
-# Paxform Secure Drop 🔐
+# Paxform Secure Drop
 
 A secure, burn-on-read secret sharing service built with Laravel.
 
-## 🌐 Live Demo
+##  Live Demo
 
 **Production URL:** https://paxform-drop.duckdns.org  
 **API Docs:** https://paxform-drop.duckdns.org/docs
 
-## ✨ Features
+##  Features
 
-- 🔒 End-to-end encryption using Laravel Crypt
-- 🔥 Burn-on-read: secrets are deleted after viewing
-- ⏱️ Optional TTL (Time To Live) support
-- 🆔 UUID-based secure, non-sequential IDs
-- 🏗️ Clean Service-Repository architecture
-- 🐳 Production-ready Docker setup
-- 🚀 Automated CI/CD with GitHub Actions
-- 🌐 Traefik reverse proxy with auto-SSL
+-  End-to-end encryption using Laravel Crypt
+-  Burn-on-read: secrets are deleted after viewing
+-  Optional TTL (Time To Live) support
+-  UUID-based secure, non-sequential IDs
+-  Clean Service-Repository architecture
+-  Production-ready Docker setup
+-  Automated CI/CD with GitHub Actions
+-  Traefik reverse proxy with auto-SSL
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Local Development
 
@@ -51,7 +51,7 @@ docker-compose exec app php artisan key:generate
 docker-compose exec app php artisan migrate --force
 ```
 
-## 📡 API Usage
+##  API Usage
 
 ### Create a Secret
 
@@ -87,7 +87,7 @@ curl https://paxform-drop.duckdns.org/api/v1/secrets/9c8f1234-5678-90ab-cdef-123
 }
 ```
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Service-Repository Pattern
 
@@ -109,7 +109,7 @@ Controller → Service → Repository → Model
 - **Container**: Docker, Docker Compose
 - **CI/CD**: GitHub Actions
 
-## 🐳 Docker Architecture
+##  Docker Architecture
 
 ### Multi-stage Build
 
@@ -129,7 +129,7 @@ Stage 2 (Production):
 - `docker-compose.override.yml`: Dev overrides (auto-loaded)
 - `docker-compose.prod.yml`: Production overrides
 
-## 🔐 Security Features
+##  Security Features
 
 - Encrypted content storage
 - Non-sequential UUID IDs
@@ -138,7 +138,7 @@ Stage 2 (Production):
 - Vulnerability scanning with Trivy
 - HTTPS with Let's Encrypt
 
-## 📊 CI/CD Pipeline
+##  CI/CD Pipeline
 
 1. **Lint & Test**: Pint + PHPUnit
 2. **Security Scan**: Trivy vulnerability check
@@ -146,7 +146,7 @@ Stage 2 (Production):
 4. **Deploy**: Automated VPS deployment
 5. **Health Check**: Post-deployment verification
 
-## 🛠️ Development Commands
+##  Development Commands
 
 ```bash
 make install    # Install dependencies
@@ -157,7 +157,7 @@ make prod       # Deploy to production
 make clean      # Clean containers
 ```
 
-## 📝 Environment Variables
+##  Environment Variables
 
 Copy `.env.example` to `.env` and configure:
 
@@ -166,16 +166,16 @@ Copy `.env.example` to `.env` and configure:
 - `REDIS_PASSWORD`: Redis password
 - `APP_URL`: Your domain URL
 
-## 🚦 Health Check
+##  Health Check
 
 ```bash
 curl https://paxform-drop.duckdns.org/api/health
 ```
 
-## 📄 License
+## License
 
 MIT License
 
-## 👨‍💻 Author
+## Author
 
 Built for Paxform DevOps Challenge
