@@ -1,0 +1,12 @@
+app/
+├── Http/
+│   ├── Controllers/Api/V1/SecretController.php
+├── Services/SecretService.php
+├── Repositories/
+│   ├── SecretRepository.php
+│   ├── Contracts/SecretRepositoryInterface.php
+├── Models/Secret.php
+database/
+├── migrations/xxxx_create_secrets_table.php
+routes/
+├── api.php

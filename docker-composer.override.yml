@@ -1,0 +1,6 @@
+services:
+  app:
+    volumes:
+      - .:/app
+    ports:
+      - "9000:9000"

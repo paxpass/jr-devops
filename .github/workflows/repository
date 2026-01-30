@@ -1,0 +1,23 @@
+interface SecretRepositoryInterface {
+    public function create(array $data);
+    public function find(string $id);
+    public function delete(string $id);
+}
+class SecretRepository implements SecretRepositoryInterface
+{
+    public function create(array $data) {
+        return Secret::create($data);
+    }
+
+    public function find(string $id) {
+        return Secret::where('id', $id)
+            ->where(function ($q) {
+                $q->whereNull('expires_at')
+                  ->orWhere('expires_at', '>', now());
+            })->first();
+    }
+
+    public function delete(string $id) {
+        Secret::where('id', $id)->delete();
+    }
+}

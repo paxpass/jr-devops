@@ -1,0 +1,27 @@
+## Secure Drop – DevOps & Backend Challenge
+
+### Live URL
+https://secure-drop.example.com
+
+### Summary
+This PR implements a production-ready "Secure Drop" service using Laravel 11,
+following a strict Service–Repository architecture. Secrets are encrypted at rest,
+burned on read, and exposed via UUID-based URLs.
+
+### Architecture
+- Laravel 11 API
+- Service–Repository pattern
+- Encrypted payloads
+- UUID identifiers
+- TTL-based expiration
+
+### DevOps
+- Multi-stage Docker build
+- Non-root container execution
+- Traefik reverse proxy using Docker labels
+- Health checks
+- Environment-specific Docker Compose files
+
+### Local Setup
+```bash
+docker compose up --build

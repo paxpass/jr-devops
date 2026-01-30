@@ -1,0 +1,6 @@
+Schema::create('secrets', function (Blueprint $table) {
+    $table->uuid('id')->primary();
+    $table->text('payload');
+    $table->timestamp('expires_at')->nullable();
+    $table->timestamps();
+});

@@ -1,0 +1,7 @@
+class Secret extends Model
+{
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    protected $fillable = ['id', 'payload', 'expires_at'];
+}

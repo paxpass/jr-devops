@@ -1,0 +1,26 @@
+class SecretController extends Controller
+{
+    public function store(Request $request, SecretService $service)
+    {
+        $request->validate([
+            'text' => 'required|string',
+            'ttl' => 'nullable|integer'
+        ]);
+
+        $secret = $service->store(
+            $request->text,
+            $request->ttl
+        );
+
+        return response()->json([
+            'url' => url("/api/v1/secrets/{$secret->id}")
+        ]);
+    }
+
+    public function show(string $id, SecretService $service)
+    {
+        return response()->json([
+            'text' => $service->reveal($id)
+        ]);
+    }
+}
