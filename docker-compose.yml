@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    networks: [traefik]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.secure-drop.rule=Host(`secure-drop.localhost`)
+      - traefik.http.services.secure-drop.loadbalancer.server.port=9000
+    healthcheck:
+      test: ["CMD", "php", "artisan", "health:check"]
+      interval: 10s
+      retries: 3
+
+  traefik:
+    image: traefik:v3.0
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    networks: [traefik]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  traefik:

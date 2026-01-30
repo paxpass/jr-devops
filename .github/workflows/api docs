@@ -1,0 +1,2 @@
+composer require knuckleswtf/scribe
+php artisan scribe:generate

@@ -1,0 +1,25 @@
+class SecretService
+{
+    public function __construct(private SecretRepositoryInterface $repo) {}
+
+    public function store(string $text, ?int $ttl)
+    {
+        return $this->repo->create([
+            'id' => (string) Str::uuid(),
+            'payload' => encrypt($text),
+            'expires_at' => $ttl ? now()->addSeconds($ttl) : null
+        ]);
+    }
+
+    public function reveal(string $id): string
+    {
+        $secret = $this->repo->find($id);
+
+        abort_if(!$secret, 404);
+
+        $text = decrypt($secret->payload);
+        $this->repo->delete($id);
+
+        return $text;
+    }
+}
