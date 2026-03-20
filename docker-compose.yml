@@ -1,0 +1,53 @@
+services:
+  traefik:
+    image: traefik:v2.11
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.securedrop.rule=Host(`localhost`) || Host(`secure-drop.localhost`)"
+      - "traefik.http.routers.securedrop.entrypoints=web"
+      - "traefik.http.services.securedrop.loadbalancer.server.port=80"
+    depends_on:
+      - app
+    networks:
+      - app-network
+  app:
+    user: "1000:1000"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "php", "artisan", "migrate:status"]
+      interval: 30s # Give it more time
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: mysql:8
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
